@@ -53,8 +53,8 @@ class Group(BaseGroup):
 
 class Player(BasePlayer):
     started_task_at = models.FloatField()
-    time_elapsed = models.FloatField()
-    time_remaining = models.FloatField()
+    # time_elapsed = models.FloatField()
+    # time_remaining = models.FloatField()
 
     response_1 = models.IntegerField()
     response_2 = models.IntegerField()
@@ -94,12 +94,12 @@ class Player(BasePlayer):
         self.started_task_at = time.time()
 
     def get_time_elapsed(self):
-        self.time_elapsed = time.time() - self.in_round(1).started_task_at
-        return self.time_elapsed
+        # self.time_elapsed = time.time() - self.in_round(1).started_task_at
+        return time.time() - self.in_round(1).started_task_at
 
     def get_time_remaining(self):
-        self.time_remaining = self.subsession.time_for_task - self.get_time_elapsed()
-        return self.time_remaining
+        # self.time_remaining = self.subsession.time_for_task - self.get_time_elapsed()
+        return self.subsession.time_for_task - self.get_time_elapsed()
 
 
 def creating_session(subsession):
