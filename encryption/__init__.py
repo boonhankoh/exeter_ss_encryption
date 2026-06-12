@@ -1,4 +1,5 @@
 import string
+import time
 
 from otree.api import *
 
@@ -12,6 +13,7 @@ class C(BaseConstants):
     NAME_IN_URL = 'encryption'
     PLAYERS_PER_GROUP = None
     NUM_ROUNDS = 3
+    TIME_FOR_TASK = 180
 
 
 class Subsession(BaseSubsession):
@@ -24,6 +26,7 @@ class Subsession(BaseSubsession):
         self.payment_per_correct = Currency(0.10)
         self.word = "ABABA"
         self.lookup_table = string.ascii_uppercase
+        self.time_for_task = C.TIME_FOR_TASK
 
     @property
     def lookup_dict(self):
@@ -49,6 +52,10 @@ class Group(BaseGroup):
 
 
 class Player(BasePlayer):
+    started_task_at = models.FloatField()
+    time_elapsed = models.FloatField()
+    time_remaining = models.FloatField()
+
     response_1 = models.IntegerField()
     response_2 = models.IntegerField()
     response_3 = models.IntegerField()
@@ -83,6 +90,17 @@ class Player(BasePlayer):
         if self.is_correct:
             self.payoff = self.subsession.payment_per_correct
 
+    def start_task(self):
+        self.started_task_at = time.time()
+
+    def get_time_elapsed(self):
+        self.time_elapsed = time.time() - self.in_round(1).started_task_at
+        return self.time_elapsed
+
+    def get_time_remaining(self):
+        self.time_remaining = self.subsession.time_for_task - self.get_time_elapsed()
+        return self.time_remaining
+
 
 def creating_session(subsession):
     subsession.setup_round()
@@ -93,6 +111,10 @@ class Intro(Page):
     @staticmethod
     def is_displayed(player):
         return player.round_number == 1
+
+    @staticmethod
+    def before_next_page(player,timeout_happened):
+        player.start_task()
 
 
 class Decision(Page):
@@ -105,6 +127,11 @@ class Decision(Page):
     @staticmethod
     def before_next_page(player,timeout_happened):
         player.check_response()
+        # player.get_time_remaining()
+
+    @staticmethod
+    def get_timeout_seconds(player):
+        return player.get_time_remaining()
 
 
 class Results(Page):
