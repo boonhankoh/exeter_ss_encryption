@@ -7,6 +7,9 @@ SESSION_CONFIGS = [
             "encryption",
         ],
         num_demo_participants=2,
+        random_seed = 12345,
+        payment_per_correct = 0.2,
+        time_for_task=180,
     ),
     dict(
         name="splash_demo",
