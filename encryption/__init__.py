@@ -14,8 +14,9 @@ class C(BaseConstants):
     NAME_IN_URL = 'encryption'
     PLAYERS_PER_GROUP = None
     NUM_ROUNDS = 3
-    TIME_FOR_TASK = 10000000
     RANDOM_SEED = 12345678
+    PAYMENT_PER_CORRECT = 0.10
+    TIME_FOR_TASK = 10000000
 
 
 class Subsession(BaseSubsession):
@@ -34,7 +35,7 @@ class Subsession(BaseSubsession):
             self.lookup_table = self.in_round(1).lookup_table
         self.word = "".join(random.choices(string.ascii_uppercase, k=5))
 
-        self.payment_per_correct = Currency(0.10)
+        self.payment_per_correct = Currency(C.PAYMENT_PER_CORRECT)
         self.time_for_task = C.TIME_FOR_TASK
 
     @property
