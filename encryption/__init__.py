@@ -1,3 +1,5 @@
+import string
+
 from otree.api import *
 
 
@@ -21,12 +23,12 @@ class Subsession(BaseSubsession):
     def setup_round(self):
         self.payment_per_correct = Currency(0.10)
         self.word = "AB"
-        self.lookup_table = "BA"
+        self.lookup_table = string.ascii_uppercase
 
     @property
     def lookup_dict(self):
         lookup = {}
-        for letter in ["A", "B"]:
+        for letter in string.ascii_uppercase:
             lookup[letter] = self.lookup_table.index(letter)+1
         return lookup
 
