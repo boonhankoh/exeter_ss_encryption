@@ -1,3 +1,4 @@
+import random
 import string
 import time
 
@@ -13,19 +14,27 @@ class C(BaseConstants):
     NAME_IN_URL = 'encryption'
     PLAYERS_PER_GROUP = None
     NUM_ROUNDS = 3
-    TIME_FOR_TASK = 180
+    TIME_FOR_TASK = 10000000
+    RANDOM_SEED = 12345678
 
 
 class Subsession(BaseSubsession):
+    random_seed = models.IntegerField()
     payment_per_correct = models.CurrencyField()
     word = models.StringField()
     lookup_table = models.StringField()
     time_for_task = models.IntegerField()
 
     def setup_round(self):
+        if self.round_number == 1:
+            self.random_seed = C.RANDOM_SEED
+            random.seed(self.random_seed)
+            self.lookup_table = "".join(random.sample(string.ascii_uppercase, 26))
+        else:
+            self.lookup_table = self.in_round(1).lookup_table
+        self.word = "".join(random.choices(string.ascii_uppercase, k=5))
+
         self.payment_per_correct = Currency(0.10)
-        self.word = "ABABA"
-        self.lookup_table = string.ascii_uppercase
         self.time_for_task = C.TIME_FOR_TASK
 
     @property
