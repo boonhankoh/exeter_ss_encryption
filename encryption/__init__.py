@@ -30,9 +30,9 @@ class Subsession(BaseSubsession):
         if self.round_number == 1:
             self.random_seed = self.session.config.get("random_seed",C.RANDOM_SEED)
             random.seed(self.random_seed)
-            self.lookup_table = "".join(random.sample(string.ascii_uppercase, 26))
         else:
-            self.lookup_table = self.in_round(1).lookup_table
+            pass
+        self.lookup_table = "".join(random.sample(string.ascii_uppercase, 26))
         self.word = "".join(random.choices(string.ascii_uppercase, k=5))
 
         self.payment_per_correct = Currency(self.session.config.get("payment_per_correct",C.PAYMENT_PER_CORRECT))
